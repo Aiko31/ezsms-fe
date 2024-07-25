@@ -335,31 +335,44 @@
               $(document).ready(function () {
                 $('#costCalculatorSMS').on('submit', function (e) {
                   e.preventDefault();
-
+            
                   var smsCount = parseFloat($('#smsCount').val());
                   var smsType = parseFloat($('input[name="smsType1"]:checked').val());
                   var linkTracking = parseFloat($('#linkTracking').val());
-
-                  var totalCost = smsCount * (smsType + linkTracking);
-                  var totalPoint = smsCount * 10;
-
+            
+                  var totalCost = 0;
+                  var totalPoint = smsCount * 10; // 共通の計算
+            
+                  // smsTypeの値に応じた条件分岐
+                  if (smsType === 50) {
+                    // smsTypeが50の場合の計算
+                    totalCost = smsCount * (smsType + linkTracking) * 1.1; // 例: 10%の追加料金
+                  } else if (smsType === 10) {
+                    // smsTypeが10の場合の計算
+                    totalCost = smsCount * (smsType + linkTracking) * 0.9; // 例: 10%の割引
+                  } else {
+                    // それ以外の場合の計算
+                    totalCost = smsCount * (smsType + linkTracking);
+                  }
+            
                   $('#result').text('JPY ' + Math.round(totalCost).toLocaleString());
-                  $('#result_point').text('= ' + Math.round(totalPoint).toLocaleString() + 'Points');
-
+                  $('#result_point').text('= ' + Math.round(totalPoint).toLocaleString() + ' Points');
+            
                   var resultContainer = $('#SMS-CalculatorResult');
-
-                    // アニメーションをリセットして一旦非表示にする
-                    resultContainer.find('.animated').removeClass('slideIn');
-                    resultContainer.addClass('d-none');
-
-                    // 少し遅延を入れてから表示し直してアニメーションを再適用
-                    setTimeout(function() {
+            
+                  // アニメーションをリセットして一旦非表示にする
+                  resultContainer.find('.animated').removeClass('slideIn');
+                  resultContainer.addClass('d-none');
+            
+                  // 少し遅延を入れてから表示し直してアニメーションを再適用
+                  setTimeout(function() {
                     resultContainer.removeClass('d-none');
                     resultContainer.find('.animated').addClass('slideIn');
-                    }, 10);
+                  }, 10);
                 });
               });
             </script>
+            
           </div>
           <!-- Second Form -->
           <div class="tab-pane fade" id="nav-form2" role="tabpanel" aria-labelledby="nav-form2-tab">
