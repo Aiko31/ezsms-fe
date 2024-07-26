@@ -120,6 +120,34 @@
   .slideIn {
     animation-name: slideIn;
   }
+
+  .btn {
+  display: inline-block;
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  background-color: #007bff;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
 </style>
 
   <!-- Bootstrap core CSS -->
@@ -316,8 +344,8 @@
               </div>
               <div class="form-group d-flex align-items-center" style="padding:10px;">
                 <select id="linkTracking" class="form-control mr-2" required style="width: auto;">
-                  <option value="0">I WILL USE</option>
-                  <option value="1">I will NOT USE</option>
+                  <option value="1">I WILL USE</option>
+                  <option value="0">I will NOT USE</option>
                 </select>
                 <label for="linkTracking">Link Tracking</label>
               </div>
@@ -325,7 +353,7 @@
             </form>
             <br>
             <!-- SMS-Calculator Result -->
-            <div class="bg-tint d-none" style="padding: 15px; display: flex; flex-direction: column; align-items: center; text-align: center;" id="SMS-CalculatorResult">
+            <div id="SMS-CalculatorResult" class="bg-tint d-none" style="padding: 15px; display: flex; flex-direction: column; align-items: center; text-align: center;">
               <h3 class="mt-3 animated" style="animation-name: slideIn;">Expected Cost</h3>
               <h2 id="result" class="mt-3 animated" style="animation-name: slideIn;">Result Here</h2>
               <h4 id="result_point" class="mt-3 animated" style="animation-name: slideIn;">Result Point Here</h4>
@@ -335,31 +363,87 @@
               $(document).ready(function () {
                 $('#costCalculatorSMS').on('submit', function (e) {
                   e.preventDefault();
-
+            
                   var smsCount = parseFloat($('#smsCount').val());
                   var smsType = parseFloat($('input[name="smsType1"]:checked').val());
                   var linkTracking = parseFloat($('#linkTracking').val());
-
-                  var totalCost = smsCount * (smsType + linkTracking);
-                  var totalPoint = smsCount * 10;
-
-                  $('#result').text('JPY ' + Math.round(totalCost).toLocaleString());
-                  $('#result_point').text('= ' + Math.round(totalPoint).toLocaleString() + 'Points');
-
+            
+                  var totalCost = 0;
+                  var totalPoint = 0;
+            
+                  // smsTypeの値に応じた条件分岐
+                  if (smsType === 50) { // smsTypeが50（個人ユーザー）の場合
+                    if (linkTracking === 1) { // linkTrackingが1（リンクトラッキングを使う）の場合
+                      if ((smsCount * 1.1) >= 5 && (smsCount * 1.1) <= 10) { //SMS送信数+リンクトラッキング数が５-10の場合
+                        totalCost = (smsCount * 1.1) * 50; 
+                      } else if ((smsCount * 1.1) >= 11 && (smsCount * 1.1) <= 30) { //SMS送信数+リンクトラッキング数が11-30の場合
+                        totalCost = (smsCount * 1.1) * 40; 
+                      } else if ((smsCount * 1.1) >= 31 && (smsCount * 1.1) <= 100) { //SMS送信数+リンクトラッキング数が31-100の場合
+                        totalCost = (smsCount * 1.1) * 30; 
+                      } else if ((smsCount * 1.1) >= 101 && (smsCount * 1.1) <= 300) { //SMS送信数+リンクトラッキング数が101-300の場合
+                        totalCost = (smsCount * 1.1) * 20; 
+                      } else if ((smsCount * 1.1) >= 301 && (smsCount * 1.1) <= 500) { //SMS送信数+リンクトラッキング数が301-500の場合
+                        totalCost = (smsCount * 1.1) * 15; 
+                      } else if ((smsCount * 1.1) >= 501 && (smsCount * 1.1) <= 30000) { //SMS送信数+リンクトラッキング数が501-30000の場合
+                        totalCost = (smsCount * 1.1) * 10; 
+                      } else if ((smsCount * 1.1) >= 30000) { //SMS送信数+リンクトラッキング数が30000以上の場合
+                        totalCost = (smsCount * 1.1) * 10; 
+                      }
+                      totalPoint = smsCount * 1.1;
+                    } else if (linkTracking === 0) { // linkTrackingが0（リンクトラッキングを使わない）の場合の計算
+                      if (smsCount >= 5 && smsCount <= 10) { //SMS送信数が５-10の場合
+                        totalCost = smsCount * 50; 
+                      } else if (smsCount >= 11 && smsCount <= 30) { //SMS送信数が11-30の場合
+                        totalCost = smsCount * 40; 
+                      } else if (smsCount >= 31 && smsCount <= 100) { //SMS送信数が31-100の場合
+                        totalCost = smsCount * 30; 
+                      } else if (smsCount >= 101 && smsCount <= 300) { //SMS送信数が101-300の場合
+                        totalCost = smsCount * 20; 
+                      } else if (smsCount >= 301 && smsCount <= 500) { //SMS送信数が301-500の場合
+                        totalCost = smsCount * 15; 
+                      } else if (smsCount >= 501 && smsCount <= 30000) { //SMS送信数が501-30000の場合
+                        totalCost = smsCount * 10; 
+                      } else if (smsCount >= 30000) { //SMS送信数が30000以上の場合
+                        totalCost = smsCount * 10; 
+                      }
+                      totalPoint = smsCount * 1.0;
+                    }
+                  } else if (smsType === 10) {
+                    // smsTypeが10（法人ユーザー）の場合の計算
+                    if (linkTracking === 1) {
+                      // linkTrackingが1（リンクトラッキングを使う）の場合の計算
+                      totalCost = smsCount * 11;
+                      totalPoint = smsCount * 1.1;
+                    } else if (linkTracking === 0) {
+                      // linkTrackingが0（リンクトラッキングを使わない）の場合の計算
+                      totalCost = smsCount * 10;
+                      totalPoint = smsCount * 1;
+                    }
+                  } else {
+                    // それ以外の場合の計算
+                    totalCost = smsCount * (smsType + linkTracking);
+                  }
+            
+                  $('#result').text('JPY ' + Math.round(totalCost).toLocaleString() + ' (excl. Tax)');
+                  $('#result_point').text('= ' + Math.round(totalPoint).toLocaleString() + ' Points');
+            
                   var resultContainer = $('#SMS-CalculatorResult');
-
-                    // アニメーションをリセットして一旦非表示にする
-                    resultContainer.find('.animated').removeClass('slideIn');
-                    resultContainer.addClass('d-none');
-
-                    // 少し遅延を入れてから表示し直してアニメーションを再適用
-                    setTimeout(function() {
+            
+                  // アニメーションをリセットして一旦非表示にする
+                  resultContainer.find('.animated').removeClass('slideIn');
+                  resultContainer.addClass('d-none');
+            
+                  // 少し遅延を入れてから表示し直してアニメーションを再適用
+                  setTimeout(function() {
                     resultContainer.removeClass('d-none');
                     resultContainer.find('.animated').addClass('slideIn');
-                    }, 10);
+                  }, 10);
                 });
               });
             </script>
+            
+            
+            
           </div>
           <!-- Second Form -->
           <div class="tab-pane fade" id="nav-form2" role="tabpanel" aria-labelledby="nav-form2-tab">
@@ -417,9 +501,10 @@
       <div class="col-12 col-md-4 d-flex flex-column align-items-center">
         <br>
         <br>
-        <img src="img/save-more.png" alt="Placeholder Image" class="img-fluid mb-3" style="width: 200px;">
+        <img src="img/save-more.png" alt="Placeholder Image" class="img-fluid mb-3" style="width: 150px;">
         <p>
-          <h2>Pay only what you use</h2>  
+          <h2 class="align-items">Pay only</h2>
+          <h2 class="align-items">what you use</h2>  
         </p>
         <p>
           No contract, no subscription fees<br>
@@ -429,7 +514,7 @@
           Sign up and start sending in 5 minutes!
         </p>
         <br>
-        <a href="https://example.com" class="btn btn-primary">Go to URL</a>
+        <a href="https://www.ezsms.biz/en/register/" class="btn btn-primary">Start using EZSMS</a>
       </div>
     </div>
   </div>
