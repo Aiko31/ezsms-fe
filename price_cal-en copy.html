@@ -120,6 +120,34 @@
   .slideIn {
     animation-name: slideIn;
   }
+
+  .btn {
+  display: inline-block;
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  background-color: #007bff;
+  border: 1px solid transparent;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
 </style>
 
   <!-- Bootstrap core CSS -->
@@ -316,8 +344,8 @@
               </div>
               <div class="form-group d-flex align-items-center" style="padding:10px;">
                 <select id="linkTracking" class="form-control mr-2" required style="width: auto;">
-                  <option value="0">I WILL USE</option>
-                  <option value="1">I will NOT USE</option>
+                  <option value="1">I WILL USE</option>
+                  <option value="0">I will NOT USE</option>
                 </select>
                 <label for="linkTracking">Link Tracking</label>
               </div>
@@ -345,11 +373,20 @@
             
                   // smsTypeの値に応じた条件分岐
                   if (smsType === 50) {
-                    // smsTypeが50の場合の計算
+                    // smsTypeが50（個人ユーザー）の場合の計算
                     totalCost = smsCount * (smsType + linkTracking) * 1.1; // 例: 10%の追加料金
                   } else if (smsType === 10) {
-                    // smsTypeが10の場合の計算
-                    totalCost = smsCount * (smsType + linkTracking) * 0.9; // 例: 10%の割引
+                    // smsTypeが10（法人ユーザー）の場合の計算
+                    if (linkTracking === 1){
+                      // linkTrackingが0（リンクトラッキングを使わない）の場合の計算
+                      totalCost = smsCount * 10;
+                    } else if (linkTracking === 0)  
+                      // linkTrackingが 1（リンクトラッキングを使う）の場合の計算 
+                      totalCost = smsCount * 11;
+                  } else {
+                    // それ以外の場合の計算
+                    totalCost = smsCount * (smsType + linkTracking);
+                  }
                   } else {
                     // それ以外の場合の計算
                     totalCost = smsCount * (smsType + linkTracking);
@@ -430,9 +467,10 @@
       <div class="col-12 col-md-4 d-flex flex-column align-items-center">
         <br>
         <br>
-        <img src="img/save-more.png" alt="Placeholder Image" class="img-fluid mb-3" style="width: 200px;">
+        <img src="img/save-more.png" alt="Placeholder Image" class="img-fluid mb-3" style="width: 150px;">
         <p>
-          <h2>Pay only what you use</h2>  
+          <h2 class="align-items">Pay only</h2>
+          <h2 class="align-items">what you use</h2>  
         </p>
         <p>
           No contract, no subscription fees<br>
@@ -442,7 +480,7 @@
           Sign up and start sending in 5 minutes!
         </p>
         <br>
-        <a href="https://example.com" class="btn btn-primary">Go to URL</a>
+        <a href="https://www.ezsms.biz/en/register/" class="btn btn-primary">Start using EZSMS</a>
       </div>
     </div>
   </div>
