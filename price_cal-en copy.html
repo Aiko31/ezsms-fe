@@ -369,30 +369,62 @@
                   var linkTracking = parseFloat($('#linkTracking').val());
             
                   var totalCost = 0;
-                  var totalPoint = smsCount * 10; // 共通の計算
+                  var totalPoint = 0;
             
                   // smsTypeの値に応じた条件分岐
-                  if (smsType === 50) {
-                    // smsTypeが50（個人ユーザー）の場合の計算
-                    totalCost = smsCount * (smsType + linkTracking) * 1.1; // 例: 10%の追加料金
+                  if (smsType === 50) { // smsTypeが50（個人ユーザー）の場合
+                    if (linkTracking === 1) { // linkTrackingが1（リンクトラッキングを使う）の場合
+                      if ((smsCount * 1.1) >= 5 && (smsCount * 1.1) <= 10) { //SMS送信数+リンクトラッキング数が５-10の場合
+                        totalCost = (smsCount * 1.1) * 50; 
+                      } else if ((smsCount * 1.1) >= 11 && (smsCount * 1.1) <= 30) { //SMS送信数+リンクトラッキング数が11-30の場合
+                        totalCost = (smsCount * 1.1) * 40; 
+                      } else if ((smsCount * 1.1) >= 31 && (smsCount * 1.1) <= 100) { //SMS送信数+リンクトラッキング数が31-100の場合
+                        totalCost = (smsCount * 1.1) * 30; 
+                      } else if ((smsCount * 1.1) >= 101 && (smsCount * 1.1) <= 300) { //SMS送信数+リンクトラッキング数が101-300の場合
+                        totalCost = (smsCount * 1.1) * 20; 
+                      } else if ((smsCount * 1.1) >= 301 && (smsCount * 1.1) <= 500) { //SMS送信数+リンクトラッキング数が301-500の場合
+                        totalCost = (smsCount * 1.1) * 15; 
+                      } else if ((smsCount * 1.1) >= 501 && (smsCount * 1.1) <= 30000) { //SMS送信数+リンクトラッキング数が501-30000の場合
+                        totalCost = (smsCount * 1.1) * 10; 
+                      } else if ((smsCount * 1.1) >= 30000) { //SMS送信数+リンクトラッキング数が30000以上の場合
+                        totalCost = (smsCount * 1.1) * 10; 
+                      }
+                      totalPoint = smsCount * 1.1;
+                    } else if (linkTracking === 0) { // linkTrackingが0（リンクトラッキングを使わない）の場合の計算
+                      if (smsCount >= 5 && smsCount <= 10) { //SMS送信数が５-10の場合
+                        totalCost = smsCount * 50; 
+                      } else if (smsCount >= 11 && smsCount <= 30) { //SMS送信数が11-30の場合
+                        totalCost = smsCount * 40; 
+                      } else if (smsCount >= 31 && smsCount <= 100) { //SMS送信数が31-100の場合
+                        totalCost = smsCount * 30; 
+                      } else if (smsCount >= 101 && smsCount <= 300) { //SMS送信数が101-300の場合
+                        totalCost = smsCount * 20; 
+                      } else if (smsCount >= 301 && smsCount <= 500) { //SMS送信数が301-500の場合
+                        totalCost = smsCount * 15; 
+                      } else if (smsCount >= 501 && smsCount <= 30000) { //SMS送信数が501-30000の場合
+                        totalCost = smsCount * 10; 
+                      } else if (smsCount >= 30000) { //SMS送信数が30000以上の場合
+                        totalCost = smsCount * 10; 
+                      }
+                      totalPoint = smsCount * 1.0;
+                    }
                   } else if (smsType === 10) {
                     // smsTypeが10（法人ユーザー）の場合の計算
-                    if (linkTracking === 1){
+                    if (linkTracking === 1) {
+                      // linkTrackingが1（リンクトラッキングを使う）の場合の計算
+                      totalCost = smsCount * 11;
+                      totalPoint = smsCount * 1.1;
+                    } else if (linkTracking === 0) {
                       // linkTrackingが0（リンクトラッキングを使わない）の場合の計算
                       totalCost = smsCount * 10;
-                    } else if (linkTracking === 0)  
-                      // linkTrackingが 1（リンクトラッキングを使う）の場合の計算 
-                      totalCost = smsCount * 11;
-                  } else {
-                    // それ以外の場合の計算
-                    totalCost = smsCount * (smsType + linkTracking);
-                  }
+                      totalPoint = smsCount * 1;
+                    }
                   } else {
                     // それ以外の場合の計算
                     totalCost = smsCount * (smsType + linkTracking);
                   }
             
-                  $('#result').text('JPY ' + Math.round(totalCost).toLocaleString());
+                  $('#result').text('JPY ' + Math.round(totalCost).toLocaleString() + ' (excl. Tax)');
                   $('#result_point').text('= ' + Math.round(totalPoint).toLocaleString() + ' Points');
             
                   var resultContainer = $('#SMS-CalculatorResult');
@@ -409,6 +441,8 @@
                 });
               });
             </script>
+            
+            
             
           </div>
           <!-- Second Form -->
